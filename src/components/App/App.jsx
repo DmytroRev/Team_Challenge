@@ -5,7 +5,6 @@ import { getConnection, getAllRecords } from '../../../api';
 const App = () => {
     const [demo, setDemo] = useState('');
     const [records, setRecords] = useState([]);
-    
     useEffect(() => {
         const fetchData = async () => {
             try {
