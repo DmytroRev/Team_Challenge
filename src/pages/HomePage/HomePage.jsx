@@ -1,30 +1,31 @@
-import { useEffect, useState } from 'react';
-
-import { getConnection, getAllRecords } from '../../../api';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getDemo, getDemoAll } from '../../redux/demo/operations';
+import { selectDemo, selectRecords, selectIsLoading, selectError } from '../../redux/demo/selectors';
+import { nanoid } from 'nanoid';
 
 const HomePage = () => {
-    const [demo, setDemo] = useState('');
-    const [records, setRecords] = useState([]);
+    const dispatch = useDispatch();
+    const demo = useSelector(selectDemo);
+    const records = useSelector(selectRecords);
+    const isLoading = useSelector(selectIsLoading);
+    const error = useSelector(selectError);
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const demo = await getConnection();
-                const records = await getAllRecords();
-                setDemo(demo);
-                setRecords(records);
-            } catch (error) {
-                console.error('Error fetching users:', error);
-            }
-        };
-        fetchData();
-    }, []);
+        dispatch(getDemo());
+        dispatch(getDemoAll());
+    }, [dispatch]);
+
+    if (isLoading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error}</p>;
+
     return (
-        <div>
+        <>
             <p>{demo}</p>
-            {records.map((item) => (
-                <div key={item.name}>{item.name}</div>
+            {records.map((record) => (
+                <div key={nanoid()}>{record.name}</div>
             ))}
-        </div>
+        </>
     );
 };
 
