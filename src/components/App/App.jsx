@@ -1,32 +1,34 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense } from 'react';
+import { Route, Routes } from 'react-router';
+import Navigation from '../../components/Navigation';
 
-import { getConnection, getAllRecords } from '../../../api';
+const HomePage = lazy(() => import('../../pages/HomePage'));
+const HelpDonationPage = lazy(() => import('../../pages/HelpDonationPage'));
+const NewsPage = lazy(() => import('../../pages/NewsPage'));
+const SearchPage = lazy(() => import('../../pages/SearchPage'));
+const AboutUsPage = lazy(() => import('../../pages/AboutUsPage'));
+const MyAccountPage = lazy(() => import('../../pages/MyAccountPage'));
+const SignInPage = lazy(() => import('../../pages/SignInPage'));
+const SignUpPage = lazy(() => import('../../pages/SignUpPage'));
 
 const App = () => {
-    const [demo, setDemo] = useState('');
-    const [records, setRecords] = useState([]);
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const demo = await getConnection();
-                const records = await getAllRecords();
-                setDemo(demo);
-                setRecords(records);
-            } catch (error) {
-                console.error('Error fetching users:', error);
-            }
-        };
-        fetchData();
-    }, []);
-    return (
-        <div>
-            <p>{demo}</p>
-            {records.map((item) => (
-                <div key={item.name}>{item.name}</div>
-            ))}
-        </div>
-    );
+  return (
+    <>
+      <Navigation />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/news" element={<NewsPage />} />
+          <Route path="/about-us" element={<AboutUsPage />} />
+          <Route path="/help-donations" element={<HelpDonationPage />} />
+          <Route path="/my-account" element={<MyAccountPage />} />
+          <Route path="/sign-in" element={<SignInPage />} />
+          <Route path="/sign-up" element={<SignUpPage />} />
+        </Routes>
+      </Suspense>
+    </>
+  );
 };
 
 export default App;
-
